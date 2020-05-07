@@ -1,0 +1,9 @@
+
+ ____   ____    ___
+|  _ \ |  _ \  / _ \
+| |_) || |_) || | | |
+|  __/ |  _ < | |_| |
+|_|    |_| \_\ \___/
+
+${AnsiColor.GREEN}:: ${spring.application.name}:${expanded.project.version} ::
+${AnsiColor.DEFAULT}

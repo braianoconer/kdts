@@ -1,0 +1,166 @@
+version: '3.7'
+
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  logs_data:
+    driver: local
+
+
+networks:
+  observability:
+    driver: "bridge"
+
+
+
+services:
+
+  zookeeper:
+    image: bitnami/zookeeper:3
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - observability
+
+
+  kafka:
+    image: bitnami/kafka:2
+    container_name: kafka
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_CREATE_TOPICS="english:1:1,spanish:1:1,italian:1:1,german:1:1"
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:29092,PLAINTEXT_HOST://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - observability
+
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      STORAGE_TYPE: mem
+    ports:
+      - 9411:9411
+    networks:
+      - observability
+
+
+  translator:
+    image: docker-registry.pro.com/pro/translator:latest
+    container_name: translator
+    ports:
+      - "8085:8085"
+    volumes:
+      - logs_data:/logs
+    environment:
+      server.port: 8085
+      spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+    depends_on:
+      - zipkin
+    networks:
+      - observability
+
+
+  english-initiator:
+    image: docker-registry.pro.com/pro/english-initiator:latest
+    container_name: english-initiator
+    ports:
+      - "8091:8091"
+    volumes:
+      - logs_data:/logs
+    environment:
+      server.port: 8091
+      spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+      spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      service.spanish-processor-url: http://spanish-processor:8082
+      service.italian-processor-url: http://italian-processor:8083
+      service.german-processor-url: http://german-processor:8084
+    depends_on:
+      - kafka
+      - zipkin
+    networks:
+      - observability
+
+
+  spanish-processor:
+    image: docker-registry.pro.com/pro/generic-processor:latest
+    container_name: spanish-processor
+    ports:
+      - "8082:8082"
+    volumes:
+      - logs_data:/logs
+    environment:
+      spring.application.name: spanish-processor
+      server.port: 8082
+      spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+      spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      service.translator-url: ${TRANSLATOR_URL}
+      service.translator-target: ES
+    depends_on:
+      - kafka
+      - zipkin
+      - translator
+    networks:
+      - observability
+
+
+  italian-processor:
+    image: docker-registry.pro.com/pro/generic-processor:latest
+    container_name: italian-processor
+    ports:
+      - "8083:8083"
+    volumes:
+      - logs_data:/logs
+    environment:
+      spring.application.name: italian-processor
+      server.port: 8083
+      spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+      spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      service.translator-url: ${TRANSLATOR_URL}
+      service.translator-target: ES
+    depends_on:
+      - kafka
+      - zipkin
+      - translator
+    networks:
+      - observability
+
+
+  german-processor:
+    image: docker-registry.pro.com/pro/generic-processor:latest
+    container_name: german-processor
+    ports:
+      - "8084:8084"
+    volumes:
+      - logs_data:/logs
+    environment:
+      spring.application.name: german-processor
+      server.port: 8084
+      spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+      spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      service.translator-url: ${TRANSLATOR_URL}
+      service.translator-target: ES
+    depends_on:
+      - kafka
+      - zipkin
+      - translator
+    networks:
+      - observability
