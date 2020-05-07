@@ -8,6 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class ServiceConfig {
 
     lateinit var translatorTarget: String
+
+    lateinit var kafkaInTopic: String
+    lateinit var kafkaOutTopic: String
 }
 
 inline fun <reified T> T.logger(): Logger {

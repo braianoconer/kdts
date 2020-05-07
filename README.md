@@ -21,15 +21,7 @@ Make sure that you have enough resources, otherwise services like 'elastic' or '
      
 ## How to recreate the docker images for each of the services   
 
-If you have modified the code and want to recreate the images for a particular service, simply run the following command:
-
-    DOCKER_BUILDKIT=1 docker build -f $SERVICE-Dockerfile -t dts/$service .
-   
-Where you need to fill the right details for each service. For example, to rebuild the image of the english service use:
-
-    DOCKER_BUILDKIT=1 docker build -f English-Dockerfile -t dts/english .
-
-You can also use the convenience ``buildAll.sh`` script to rebuild all the images
+You can use the convenience ``buildAll.sh`` script to rebuild all the images
 
 
 ## How to run the project in Kubernetes

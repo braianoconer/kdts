@@ -90,6 +90,8 @@ services:
       server.port: 8091
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      service.kafka-out-topic: english
       service.spanish-processor-url: http://spanish-processor:8082
       service.italian-processor-url: http://italian-processor:8083
       service.german-processor-url: http://german-processor:8084
@@ -112,6 +114,11 @@ services:
       server.port: 8082
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.group-id: spanish
+      service.kafka-in-topic: english
+      service.kafka-out-topic: spanish
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: ES
     depends_on:
@@ -134,8 +141,13 @@ services:
       server.port: 8083
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.group-id: italian
+      service.kafka-in-topic: spanish
+      service.kafka-out-topic: italian
       service.translator-url: ${TRANSLATOR_URL}
-      service.translator-target: ES
+      service.translator-target: IT
     depends_on:
       - kafka
       - zipkin
@@ -156,8 +168,13 @@ services:
       server.port: 8084
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.consumer.group-id: german
+      service.kafka-in-topic: italian
+      service.kafka-out-topic: german
       service.translator-url: ${TRANSLATOR_URL}
-      service.translator-target: ES
+      service.translator-target: DE
     depends_on:
       - kafka
       - zipkin
