@@ -91,6 +91,7 @@ services:
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
       service.kafka-out-topic: english
       service.spanish-processor-url: http://spanish-processor:8082
       service.italian-processor-url: http://italian-processor:8083
@@ -115,7 +116,9 @@ services:
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
-      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
+      spring.kafka.consumer.key-deserializer: ${KAFKA_KEY_DESERIALIZER}
+      spring.kafka.producer.value-deserializer: ${KAFKA_VALUE_DESERIALIZER}
       spring.kafka.consumer.group-id: spanish
       service.kafka-in-topic: english
       service.kafka-out-topic: spanish
@@ -142,7 +145,9 @@ services:
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
-      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
+      spring.kafka.consumer.key-deserializer: ${KAFKA_KEY_DESERIALIZER}
+      spring.kafka.producer.value-deserializer: ${KAFKA_VALUE_DESERIALIZER}
       spring.kafka.consumer.group-id: italian
       service.kafka-in-topic: spanish
       service.kafka-out-topic: italian
@@ -169,7 +174,9 @@ services:
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
       spring.kafka.bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
-      spring.kafka.consumer.key-serializer: ${KAFKA_KEY_SERIALIZER}
+      spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
+      spring.kafka.consumer.key-deserializer: ${KAFKA_KEY_DESERIALIZER}
+      spring.kafka.producer.value-deserializer: ${KAFKA_VALUE_DESERIALIZER}
       spring.kafka.consumer.group-id: german
       service.kafka-in-topic: italian
       service.kafka-out-topic: german
