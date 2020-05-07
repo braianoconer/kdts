@@ -3,10 +3,9 @@ package com.pro.englishinitiator.controller
 import com.pro.englishinitiator.config.logger
 import com.pro.englishinitiator.messaging.MsgPublisher
 import com.pro.englishinitiator.service.PingService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import com.pro.englishinitiator.service.TaskExecutor
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import kotlin.math.abs
@@ -14,50 +13,50 @@ import kotlin.math.abs
 @RestController
 @RequestMapping(path = ["/v1.0"])
 class InitiatorController(val pingService: PingService,
-                          val msgPublisher: MsgPublisher<Long, String>,
+                          val taskExecutor: TaskExecutor,
                           val reqContext: HttpServletRequest) {
+
 
     private val log = logger()
 
-    private val rnd = Random()
-
-    private val english = listOf("hello", "goodbye", "good morning",
-            "good night", "how are you?", "what is your name?",
-            "my tailor is rich", "my house is your house")
-
 
     @GetMapping(path = ["/ping"])
+    @ResponseStatus(HttpStatus.OK)
     fun ping(): String {
+
         logIncomingRequest(null)
+
+        taskExecutor.processSync()
+
         val spanishResult = pingService.pingSpanishProcessor()
         val italianResult = pingService.pingItalianProcessor()
         val germanResult = pingService.pingGermanProcessor()
+
         return "ping result: spanish=$spanishResult italian=$italianResult german=$germanResult"
     }
 
     @GetMapping(path = ["/start"])
-    fun start(@RequestParam(value = "size", defaultValue = "100") size: Int) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun start(@RequestParam(value = "size", defaultValue = "10") size: Int) {
 
         logIncomingRequest(null)
-        msgPublisher.publish(getRandomInput() + "-")
+        taskExecutor.processAsync(size)
     }
 
     @GetMapping(path = ["/batch"])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun batch(@RequestParam(value = "size", defaultValue = "100") size: Int) {
 
         logIncomingRequest(null)
-        TODO("Not yet implemented")
+        taskExecutor.setBatchSize(size)
     }
 
     @GetMapping(path = ["/stop"])
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun stop() {
 
         logIncomingRequest(null)
-        TODO("Not yet implemented")
-    }
-
-    private fun getRandomInput(): String {
-        return english[abs(rnd.nextInt()) % (english.size - 1)]
+        taskExecutor.stop()
     }
 
     private fun logIncomingRequest(body: Any?) {

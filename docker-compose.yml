@@ -93,9 +93,11 @@ services:
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
       spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
       service.kafka-out-topic: english
+      service.delay-millis: 500
       service.spanish-processor-url: http://spanish-processor:8082
       service.italian-processor-url: http://italian-processor:8083
       service.german-processor-url: http://german-processor:8084
+      logging.level.com.pro: TRACE
     depends_on:
       - kafka
       - zipkin
@@ -122,6 +124,7 @@ services:
       spring.kafka.consumer.group-id: spanish
       service.kafka-in-topic: english
       service.kafka-out-topic: spanish
+      service.delay-millis: 500
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: ES
     depends_on:
@@ -151,6 +154,7 @@ services:
       spring.kafka.consumer.group-id: italian
       service.kafka-in-topic: spanish
       service.kafka-out-topic: italian
+      service.delay-millis: 3000
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: IT
     depends_on:
@@ -180,6 +184,7 @@ services:
       spring.kafka.consumer.group-id: german
       service.kafka-in-topic: italian
       service.kafka-out-topic: german
+      service.delay-millis: 6000
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: DE
     depends_on:

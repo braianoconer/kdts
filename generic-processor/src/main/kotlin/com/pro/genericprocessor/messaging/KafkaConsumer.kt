@@ -19,10 +19,16 @@ class SpringKafkaMsgConsumer(val msgPublisher: MsgPublisher<Long, String>,
 
     @KafkaListener(topics = ["\${service.kafka-in-topic}"], groupId = "\${spring.kafka.consumer.group-id}")
     override fun consume(msg: String) {
+
         log.info("received from Kafka [$msg]")
         val englishToTranslate = extractWord(msg)
-        val translation = translator.translate(target = config.translatorTarget, word = englishToTranslate)
-        msgPublisher.publish("$msg$translation")
+
+        try {
+            val translation = translator.translate(target = config.translatorTarget, word = englishToTranslate)
+            msgPublisher.publish("$msg$translation")
+        } catch (e: Exception) {
+            log.error("Received a translation error for msg {}. Error: {}", msg, e.message)
+        }
     }
 
     override fun close() {

@@ -11,6 +11,9 @@ class ServiceConfig {
 
     lateinit var kafkaInTopic: String
     lateinit var kafkaOutTopic: String
+
+    var delayMillis: Long = 0
+
 }
 
 inline fun <reified T> T.logger(): Logger {
