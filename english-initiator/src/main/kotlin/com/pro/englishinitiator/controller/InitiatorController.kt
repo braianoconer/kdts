@@ -1,20 +1,17 @@
 package com.pro.englishinitiator.controller
 
 import com.pro.englishinitiator.config.logger
-import com.pro.englishinitiator.messaging.MsgPublisher
 import com.pro.englishinitiator.service.PingService
 import com.pro.englishinitiator.service.TaskExecutor
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import javax.servlet.http.HttpServletRequest
-import kotlin.math.abs
 
 @RestController
 @RequestMapping(path = ["/v1.0"])
-class InitiatorController(val pingService: PingService,
-                          val taskExecutor: TaskExecutor,
-                          val reqContext: HttpServletRequest) {
+class InitiatorController(private val pingService: PingService,
+                          private val taskExecutor: TaskExecutor,
+                          private val reqContext: HttpServletRequest) {
 
 
     private val log = logger()

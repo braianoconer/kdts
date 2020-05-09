@@ -15,9 +15,9 @@ import kotlin.math.abs
 
 @RestController
 @RequestMapping(path = ["/v1.0"])
-class TranslationsController(val serviceConfig: ServiceConfig,
-                             val dictionary: Dictionary,
-                             val reqContext: HttpServletRequest) {
+class TranslationsController(private val serviceConfig: ServiceConfig,
+                             private val dictionary: Dictionary,
+                             private val reqContext: HttpServletRequest) {
 
     private val log = logger()
     private val rnd = Random()

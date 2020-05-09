@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping(path = ["/v1.0"])
-class ProcessorController(val translator: Translator, val reqContext: HttpServletRequest) {
+class ProcessorController(private val translator: Translator, private val reqContext: HttpServletRequest) {
 
     private val log = logger()
 
@@ -20,7 +20,6 @@ class ProcessorController(val translator: Translator, val reqContext: HttpServle
                 @RequestParam(value = "word", defaultValue = "hello") word: String): String {
 
         log.info("--> ${reqContext.method} ${reqContext.requestURI}")
-
         return translator.translate(target = target, word = word)
     }
 

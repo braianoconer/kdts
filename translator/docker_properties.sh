@@ -1,9 +1,12 @@
 #!/bin/bash
 
+PROJECT_DIR=$(dirname $0)
+
+
 DOCKER_REGISTRY=${1:-docker-registry.pro.com}
 
-VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-ARTIFACT=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+VERSION=$(./mvnw -f "$PROJECT_DIR" help:evaluate -Dexpression=project.version -q -DforceStdout)
+ARTIFACT=$(./mvnw -f "$PROJECT_DIR" help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
 
 if [[ "$VERSION" == *-SNAPSHOT ]]
 then

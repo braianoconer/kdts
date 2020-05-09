@@ -8,6 +8,10 @@ volumes:
     driver: local
   logs_data:
     driver: local
+  elastic_data:
+    driver: local
+  filebeat_data:
+    driver: local
 
 
 networks:
@@ -55,10 +59,64 @@ services:
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
+    ports:
+      - '9411:9411'
     environment:
       STORAGE_TYPE: mem
+    networks:
+      - observability
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch
     ports:
-      - 9411:9411
+      - '9200:9200'
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data:rw
+      - ./elk/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - observability
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    ports:
+      - '5601:5601'
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+    networks:
+      - observability
+
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.6.2
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      #- logs_data:/usr/share/filebeat/logs_data:ro
+      - filebeat_data:/usr/share/filebeat/data:rw                        
+    restart: on-failure
+    depends_on:
+      - elasticsearch
     networks:
       - observability
 
@@ -67,12 +125,15 @@ services:
     image: docker-registry.pro.com/pro/translator:latest
     container_name: translator
     ports:
-      - "8085:8085"
+      - '8085:8085'
+    labels:
+      collect_logs_with_filebeat: "true"
     volumes:
-      - logs_data:/logs
+      - logs_data:/tmp/tmp
     environment:
       server.port: 8085
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
+      service.api-success-rate: 90
     depends_on:
       - zipkin
     networks:
@@ -83,9 +144,11 @@ services:
     image: docker-registry.pro.com/pro/english-initiator:latest
     container_name: english-initiator
     ports:
-      - "8091:8091"
+      - '8091:8091'
+    labels:
+      collect_logs_with_filebeat: "true"
     volumes:
-      - logs_data:/logs
+      - logs_data:/tmp/tmp
     environment:
       server.port: 8091
       spring.zipkin.baseUrl: ${ZIPKIN_HTTP_ENDPOINT_SHORT}
@@ -93,6 +156,7 @@ services:
       spring.kafka.producer.key-serializer: ${KAFKA_KEY_SERIALIZER}
       spring.kafka.producer.value-serializer: ${KAFKA_VALUE_SERIALIZER}
       service.kafka-out-topic: english
+      service.kafka-out-topic-full: english:1:1
       service.delay-millis: 500
       service.spanish-processor-url: http://spanish-processor:8082
       service.italian-processor-url: http://italian-processor:8083
@@ -109,9 +173,11 @@ services:
     image: docker-registry.pro.com/pro/generic-processor:latest
     container_name: spanish-processor
     ports:
-      - "8082:8082"
+      - '8082:8082'
+    labels:
+      collect_logs_with_filebeat: "true"
     volumes:
-      - logs_data:/logs
+      - logs_data:/tmp/tmp
     environment:
       spring.application.name: spanish-processor
       server.port: 8082
@@ -124,6 +190,8 @@ services:
       spring.kafka.consumer.group-id: spanish
       service.kafka-in-topic: english
       service.kafka-out-topic: spanish
+      service.kafka-in-topic-full: english:1:1
+      service.kafka-out-topic-full: spanish:1:1
       service.delay-millis: 500
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: ES
@@ -139,9 +207,11 @@ services:
     image: docker-registry.pro.com/pro/generic-processor:latest
     container_name: italian-processor
     ports:
-      - "8083:8083"
+      - '8083:8083'
+    labels:
+      collect_logs_with_filebeat: "true"
     volumes:
-      - logs_data:/logs
+      - logs_data:/tmp/tmp
     environment:
       spring.application.name: italian-processor
       server.port: 8083
@@ -154,6 +224,8 @@ services:
       spring.kafka.consumer.group-id: italian
       service.kafka-in-topic: spanish
       service.kafka-out-topic: italian
+      service.kafka-in-topic-full: spanish:1:1
+      service.kafka-out-topic-full: italian:1:1
       service.delay-millis: 3000
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: IT
@@ -169,9 +241,11 @@ services:
     image: docker-registry.pro.com/pro/generic-processor:latest
     container_name: german-processor
     ports:
-      - "8084:8084"
+      - '8084:8084'
+    labels:
+      collect_logs_with_filebeat: "true"
     volumes:
-      - logs_data:/logs
+      - logs_data:/tmp/tmp
     environment:
       spring.application.name: german-processor
       server.port: 8084
@@ -184,6 +258,8 @@ services:
       spring.kafka.consumer.group-id: german
       service.kafka-in-topic: italian
       service.kafka-out-topic: german
+      service.kafka-in-topic-full: italian:1:1
+      service.kafka-out-topic-full: german:1:1
       service.delay-millis: 6000
       service.translator-url: ${TRANSLATOR_URL}
       service.translator-target: DE

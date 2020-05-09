@@ -18,9 +18,9 @@ interface PingService {
 
 
 @Service
-class PingServiceImpl(val spanishProcessor: SpanishProcessor,
-                      val italianProcessor: ItalianProcessor,
-                      val germanProcessor: GermanProcessor): PingService {
+class PingServiceImpl(private val spanishProcessor: SpanishProcessor,
+                      private val italianProcessor: ItalianProcessor,
+                      private val germanProcessor: GermanProcessor): PingService {
 
     override fun pingSpanishProcessor(): String {
         return spanishProcessor.process()

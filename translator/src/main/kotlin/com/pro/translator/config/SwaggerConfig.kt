@@ -20,7 +20,7 @@ class SwaggerConfig {
     @Value("\${expanded.project.version}")
     lateinit var appVersion: String
 
-    @Value("\${expanded.project.name}")
+    @Value("\${spring.application.name}")
     lateinit var appName: String
 
     @Bean

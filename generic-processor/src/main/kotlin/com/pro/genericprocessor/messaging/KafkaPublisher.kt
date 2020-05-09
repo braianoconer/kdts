@@ -2,16 +2,21 @@ package com.pro.genericprocessor.messaging
 
 import com.pro.genericprocessor.config.ServiceConfig
 import com.pro.genericprocessor.config.logger
+import org.apache.kafka.clients.admin.NewTopic
+import org.springframework.context.annotation.Bean
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
 import java.util.*
+import javax.annotation.PostConstruct
 import kotlin.math.abs
+
 
 interface MsgPublisher<K, V> : AutoCloseable {
     fun publish(msg: V): Long
 }
+
 
 @Service
 class SpringKafkaMsgPublisher(private val kafkaTemplate: KafkaTemplate<Long, String>,
@@ -22,6 +27,17 @@ class SpringKafkaMsgPublisher(private val kafkaTemplate: KafkaTemplate<Long, Str
 
     private val rnd = Random()
     private var counter: Long = 0
+
+
+    @PostConstruct
+    private fun init() {
+        createOutTopic()
+    }
+
+    @Bean
+    fun createOutTopic(): NewTopic {
+        return NewTopic(config.getKafkaOutTopicName(), config.getKafkaOutTopicPartitions(), config.getKafkaOutTopicReplicationFactor())
+    }
 
     override fun publish(msg: String): Long {
 

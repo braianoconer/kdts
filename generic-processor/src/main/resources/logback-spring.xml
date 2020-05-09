@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE"
+              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}" />
+    <springProperty name="instance_activeProfile" source="spring.profiles.active" />
+    <springProperty name="instance_ip" source="spring.cloud.client.ipAddress" />
+    <springProperty name="instance_application_name" source="spring.application.name" />
+    <springProperty name="instance_port" source="server.port" />
+
+    <jmxConfigurator/>
+
+    <appender name="jsonAppender"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerInfo>true</includeCallerInfo>
+            <customFields>
+                {"instance_activeProfiles":"${instance_activeProfile}",
+                "instance_port":"${instance_port}",
+                "instance_ip":"${instance_ip}",
+                "instance_application_name":"${instance_application_name}"
+                }
+            </customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="jsonAppender" />
+    </root>
+</configuration>
