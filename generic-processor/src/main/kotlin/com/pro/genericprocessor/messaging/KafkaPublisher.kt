@@ -2,6 +2,8 @@ package com.pro.genericprocessor.messaging
 
 import com.pro.genericprocessor.config.ServiceConfig
 import com.pro.genericprocessor.config.logger
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import org.apache.kafka.clients.admin.NewTopic
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.core.KafkaTemplate
@@ -20,10 +22,18 @@ interface MsgPublisher<K, V> : AutoCloseable {
 
 @Service
 class SpringKafkaMsgPublisher(private val kafkaTemplate: KafkaTemplate<Long, String>,
+                              private val registry: MeterRegistry,
                               private val config: ServiceConfig) : MsgPublisher<Long, String> {
 
 
     private val log = logger()
+
+    private val timer: Timer = Timer.builder( "${config.getKafkaOutTopicName()}_requests_latency")
+            .publishPercentiles(0.5, 0.95, 0.99, 0.999)
+            .publishPercentileHistogram()
+            .minimumExpectedValue(Duration.ofMillis(1))
+            .maximumExpectedValue(Duration.ofMillis(config.delayMillis + 100))
+            .register(registry)
 
     private val rnd = Random()
     private var counter: Long = 0
@@ -50,8 +60,7 @@ class SpringKafkaMsgPublisher(private val kafkaTemplate: KafkaTemplate<Long, Str
         } catch (e: InterruptedException) {
             log.error(e.message)
         } finally {
-            //TODO micrometer.Timer
-            log.debug("TODO micrometer {}",Duration.between(start, Instant.now()))
+            timer.record(Duration.between(start, Instant.now()))
         }
 
         return key

@@ -1,0 +1,18 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'observability'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['english-initiator:8091','spanish-processor:8082','italian-processor:8083','german-processor:8084','translator:8085']
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  - job_name: 'docker'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['docker.for.mac.host.internal:9323']

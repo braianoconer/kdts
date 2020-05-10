@@ -24,6 +24,7 @@
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
 		<logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
 		<git-commit-id-plugin.version>2.2.5</git-commit-id-plugin.version>
+		<micrometer.version>1.5.1</micrometer.version>
 	</properties>
 
 	<dependencies>
@@ -78,6 +79,11 @@
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
 			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<version>${micrometer.version}</version>
 		</dependency>
 
 		<dependency>

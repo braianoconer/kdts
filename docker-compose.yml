@@ -2,6 +2,8 @@ version: '3.7'
 
 
 volumes:
+  prometheus_data: {}
+  grafana_data: {}
   zookeeper_data:
     driver: local
   kafka_data:
@@ -117,6 +119,34 @@ services:
     restart: on-failure
     depends_on:
       - elasticsearch
+    networks:
+      - observability
+
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - observability
+
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./metrics/grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     networks:
       - observability
 

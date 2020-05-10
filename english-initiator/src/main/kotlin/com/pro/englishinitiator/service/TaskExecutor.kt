@@ -3,6 +3,8 @@ package com.pro.englishinitiator.service
 import com.pro.englishinitiator.config.ServiceConfig
 import com.pro.englishinitiator.config.logger
 import com.pro.englishinitiator.messaging.MsgPublisher
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -29,12 +31,20 @@ interface TaskExecutor {
 
 @Service
 class TaskExecutorImpl(private val config: ServiceConfig,
+                       private val registry: MeterRegistry,
                        private val msgPublisher: MsgPublisher<Long, String>,
                        private val batchSize: AtomicInteger = AtomicInteger(100),
                        private val keepSending: AtomicBoolean = AtomicBoolean(false)) : TaskExecutor {
 
     private val log = logger()
     private val rnd = Random()
+
+    private val timer: Timer = Timer.builder( "english_requests_latency")
+            .publishPercentiles(0.5, 0.95, 0.99, 0.999)
+            .publishPercentileHistogram()
+            .minimumExpectedValue(Duration.ofMillis(1))
+            .maximumExpectedValue(Duration.ofMillis(config.delayMillis + 100))
+            .register(registry)
 
     private val english = listOf("hello", "goodbye", "good morning",
             "good night", "how are you?", "what is your name?",
@@ -59,11 +69,9 @@ class TaskExecutorImpl(private val config: ServiceConfig,
 
                     log.trace("Sending batch. Processing iteration $it")
 
-                    val start = Instant.now()
-                    msgPublisher.publish(getRandomInput() + "-")
-
-                    //TODO micrometer.Timer
-                    log.debug("TODO micrometer {}",Duration.between(start, Instant.now()))
+                    timer.record {
+                        msgPublisher.publish(getRandomInput() + "-")
+                    }
                 }
 
                 try {

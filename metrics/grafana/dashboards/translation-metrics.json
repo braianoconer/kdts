@@ -1,0 +1,1040 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "panels": [
+    {
+      "dashboardFilter": "",
+      "dashboardTags": [],
+      "datasource": null,
+      "folderId": -1,
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "limit": 10,
+      "nameFilter": "",
+      "onlyAlertsOnDashboard": false,
+      "show": "current",
+      "sortOrder": 1,
+      "stateFilter": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Latency alerts",
+      "type": "alertlist"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 5,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "gradient",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showUnfilled": true
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "topk(3, sum by (instance) (rate(process_cpu_usage[5m])))",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "CPU Usage %",
+      "type": "bargauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 10,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 31,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(http_client_requests_seconds_count{status=\"200\"})",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(http_client_requests_seconds_count{status=\"400\"})",
+          "interval": "",
+          "legendFormat": "Failed Translations",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Total translations",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 10,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": null,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "id": 21,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "pluginVersion": "6.7.1",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "sum by (instance) (spanish_requests_latency_seconds_count{instance=\"spanish-processor:8082\"})",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Spanish ",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 4,
+        "y": 5
+      },
+      "id": 24,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 75
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "((sum by (instance) (spring_kafka_listener_seconds_count{instance=\"spanish-processor:8082\"})) - (sum by (instance) (spanish_requests_latency_seconds_count{instance=\"spanish-processor:8082\"}))) / (sum by (instance) (spanish_requests_latency_seconds_count{instance=\"spanish-processor:8082\"}))",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Failed Spanish",
+      "type": "gauge"
+    },
+    {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0.5
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "last"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Spanish translations latency alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 7,
+        "y": 5
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.9, rate(spanish_requests_latency_seconds_bucket[5m])) > 0.01",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.5
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Spanish translations latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 11
+      },
+      "id": 27,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "sum by (instance) (italian_requests_latency_seconds_count{instance=\"italian-processor:8083\"})",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Italian",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 4,
+        "y": 11
+      },
+      "id": 29,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 75
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "((sum by (instance) (spring_kafka_listener_seconds_count{instance=\"italian-processor:8083\"})) - (sum by (instance) (italian_requests_latency_seconds_count{instance=\"italian-processor:8083\"}))) / (sum by (instance) (italian_requests_latency_seconds_count{instance=\"italian-processor:8083\"}))",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Failed Italian",
+      "type": "gauge"
+    },
+    {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                2.7
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "last"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Italian translations latency alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 7,
+        "y": 11
+      },
+      "hiddenSeries": false,
+      "id": 13,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.9, rate(italian_requests_latency_seconds_bucket[5m])) > 0.01",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 2.7,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Italian translations latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 17
+      },
+      "id": 28,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "sum by (instance) (german_requests_latency_seconds_count{instance=\"german-processor:8084\"})",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "German",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 4,
+        "y": 17
+      },
+      "id": 25,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "nullValueMode": "connected",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "#EAB839",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 75
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": [],
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.7.1",
+      "targets": [
+        {
+          "expr": "((sum by (instance) (spring_kafka_listener_seconds_count{instance=\"german-processor:8084\"})) - (sum by (instance) (german_requests_latency_seconds_count{instance=\"german-processor:8084\"}))) / (sum by (instance) (german_requests_latency_seconds_count{instance=\"german-processor:8084\"}))",
+          "interval": "",
+          "legendFormat": "Translations",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Failed German",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                6
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "last"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "German translations latency alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 9,
+        "x": 7,
+        "y": 17
+      },
+      "hiddenSeries": false,
+      "id": 14,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.9, rate(german_requests_latency_seconds_bucket[5m])) > 0.01",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 6,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "German translations latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "id": 6,
+      "panels": [],
+      "title": "Row title",
+      "type": "row"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Translations  Metrics",
+  "uid": "0DzqiTqWk",
+  "variables": {
+    "list": []
+  },
+  "version": 31
+}

@@ -4,6 +4,7 @@ import com.pro.translator.config.ServiceConfig
 import com.pro.translator.config.logger
 import com.pro.translator.controller.service.Dictionary
 import com.pro.translator.controller.service.TargetLanguage
+import io.micrometer.core.annotation.Timed
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,6 +23,11 @@ class TranslationsController(private val serviceConfig: ServiceConfig,
     private val log = logger()
     private val rnd = Random()
 
+    @Timed(
+            value = "com.pro.translator.controller.translate",
+            histogram = true,
+            percentiles = [0.5,0.95,0.99]
+    )
     @GetMapping(path = ["/translate"])
     fun translate(@RequestParam(value = "target", defaultValue = "ES") target: String,
                   @RequestParam(value = "word", defaultValue = "hello") word: String): ResponseEntity<String> {
